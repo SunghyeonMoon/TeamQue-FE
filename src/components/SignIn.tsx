@@ -1,5 +1,6 @@
 import { ChangeEvent, FormEvent, useState } from 'react';
 import styled from 'styled-components';
+import { KAKAO_API_URL} from "../shared/social/oAuth";
 import Modal from './Modal';
 
 interface Props {
@@ -26,6 +27,11 @@ const SignIn: React.FC<Props> = ({ isOpen, close, openSignUp }) => {
 		e.preventDefault();
 		console.log('로그인 정보 확인', inputs);
 	};
+	const onKakaoClick = () => {
+		console.log('카카오 로그인');    
+    window.location.href = KAKAO_API_URL
+  }
+	
 	if (!isOpen) {
 		return null;
 	}
@@ -53,8 +59,8 @@ const SignIn: React.FC<Props> = ({ isOpen, close, openSignUp }) => {
 				</label>
 				<button>Sign In</button>
 				<p>or</p>
-				<button>Sign in with Google</button>
-				<button>Login with Kakao</button>
+				<button>Sign in with Google</button>				
+				<button onClick={onKakaoClick}>Login with Kakao</button>				
 				<p>
 					Don't have an account? <button onClick={openSignUp}>Sign up</button>
 				</p>
