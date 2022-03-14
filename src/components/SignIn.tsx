@@ -38,7 +38,7 @@ const SignIn: React.FC<Props> = ({ isOpen, close, openSignUp }) => {
 	return (
 		<Modal close={close}>
 			<Form onSubmit={onSubmit}>
-				<h2>Sign Up</h2>
+				<h2>Sign In</h2>
 				<label>
 					Email:
 					<input

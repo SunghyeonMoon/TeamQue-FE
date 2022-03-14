@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import Spinner from '../../components/Spinner';
 import { api } from './oAuth';
 import { useNavigate } from 'react-router-dom';
+import FirstJoin from './firstJoin';
 
 const Kakao = (props) => {
 	const dispatch = useDispatch();
@@ -27,21 +28,26 @@ const Kakao = (props) => {
 				.get(`/auth/kakao/callback?code=${authorization_code}`) //create한 axios instance의 get request
 				.then((response) => {
 					console.log(response);
-					const token = response.data.accessToken;
+					const accessToken = response.data.accessToken;
+					const refreshToken = response.data.refreshToken;
 					const username = response.data.username;
-					console.log(token, 'token');
+					console.log(accessToken, 'accessToken');
+					console.log(refreshToken, 'refreshToken');
 					console.log(username, 'username');
 					//setCookie('login', token);
 					sessionStorage.setItem('username', `${username}`);
+					sessionStorage.setItem('accessToken', `${accessToken}`);
+					sessionStorage.setItem('refreshToken', `${refreshToken}`);
 				})
 				.then(() => {
 					// const defaultNick = sessionStorage.getItem('nick');
 					//const distriNick = defaultNick.indexOf('164', 0);
 					// const distriNick = defaultNick ? -1 : 1;
-					if (sessionStorage.getItem('username')) {
+					if (sessionStorage.getItem('usernick')) {
 						setFirst(false);
 						navigate('/');
 					} else {
+						console.log('setFirst');
 						setFirst(true);
 					}
 				})
@@ -51,9 +57,6 @@ const Kakao = (props) => {
 		};
 	};
 
-	return <Spinner />;
-	//return <>{first ? <SocialInfoSet /> : <Spinner />}</>;
-	//first(distrNick)가 있으면 정상적인 회원가입 창, false면 Spinner 보여주기
-	//return <>""</>;
+	return <>{first ? <FirstJoin /> : <Spinner />}</>;
 };
 export default Kakao;

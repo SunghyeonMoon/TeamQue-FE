@@ -28,7 +28,10 @@ const Header: React.FC<Props> = () => {
 				close={closeSignIn}
 				openSignUp={openSignUp}
 			/>
-			<SignUp isOpen={isSignUpOpen} close={closeSignUp} />
+			<SignUp 
+				isOpen={isSignUpOpen} 
+				close={closeSignUp} 
+			/>
 			<Container>
 				<h2>Header</h2>
 				<button onClick={openSignIn}>Sign In</button>
