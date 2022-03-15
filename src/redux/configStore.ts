@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { createBrowserHistory } from 'history';
-import user from "../redux/modules/user"
+import user from "./modules/user"
 
 export const history = createBrowserHistory();
 const store = configureStore({ reducer: user });

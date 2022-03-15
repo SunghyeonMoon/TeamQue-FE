@@ -1,7 +1,12 @@
 import React, { useState,ChangeEvent,FormEvent } from 'react';
 import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+
+import apis from '../apis/api';
 
 import styled from 'styled-components';
+
+import {nicknameSet} from '../../redux/modules/user'
 
 //import nicknCheck from '';
 
@@ -11,17 +16,35 @@ interface Props {
 
 const FirstJoin: React.FC<Props> = ({close}) => {
   const dispatch = useDispatch();
+	const navigator = useNavigate();
+
   const [nickname, setNickname] = useState("");
+	//const [isNickDouble,setNickDouble] = useState(true);
+	const [isNick, setIsNick] = useState(false); //글자 수 체크
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
- 		const { value } = e.target;
- 		setNickname(value);
+ 		setNickname(e.target.value);
+		let userNickRegex = /^[\w\Wㄱ-ㅎㅏ-ㅣ가-힣]{3,20}$/;
+    let NickRegex = userNickRegex.test(e.target.value);
+
+    if (!NickRegex) {
+      setIsNick(false);
+    } else {
+      setIsNick(true);
+    }
  	};
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
   		e.preventDefault();
-  		console.log('nickname check', nickname);
-      //dispatch(nicknCheck(nickname)); nickname 설정 후 db에 사용자 업데이트
+  		console.log( nickname,'nickname check');			
+			//중복 체크 setNickDouble(dispatch(nickCheck(nickname))); :boolean
+			//글자 수 체크
+      if(isNick === true){
+				dispatch(nicknameSet(nickname));// nickname 설정 후 db에 사용자 업데이트
+				navigator("/");
+			}else{
+				window.alert("확실히 입력하고 다시 누르소잉");
+			}
   };
   
   return (
@@ -30,6 +53,7 @@ const FirstJoin: React.FC<Props> = ({close}) => {
 		  	<Contents>
           <Form onSubmit={onSubmit}>
  		    	  <div>Hello</div>
+						 <hr/>
                <Input                      
                  placeholder="3글자 이상의 닉네임을 입력하세요."                   
                  value={nickname} 
@@ -86,3 +110,4 @@ const Form = styled.form`
 	flex-direction: column;
 	align-items: center;
 `;
+

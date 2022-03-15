@@ -1,9 +1,12 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
+//import { actionCreators as userActions } from '../../redux/modules/user';
 import Spinner from '../../components/Spinner';
+import FirstJoin from './firstJoin';
 import { api } from './oAuth';
 import { useNavigate } from 'react-router-dom';
-import FirstJoin from './firstJoin';
+//import axios from 'axios';
+//import { setCookie } from '../../shared/token';
 
 const Kakao = (props) => {
 	const dispatch = useDispatch();
@@ -30,12 +33,15 @@ const Kakao = (props) => {
 					console.log(response);
 					const accessToken = response.data.accessToken;
 					const refreshToken = response.data.refreshToken;
-					const username = response.data.username;
+					const nickname = response.data.nickname;
+
 					console.log(accessToken, 'accessToken');
 					console.log(refreshToken, 'refreshToken');
-					console.log(username, 'username');
+					console.log(nickname, 'nickname');
+
 					//setCookie('login', token);
-					sessionStorage.setItem('username', `${username}`);
+
+					sessionStorage.setItem('nickname', `${nickname}`);
 					sessionStorage.setItem('accessToken', `${accessToken}`);
 					sessionStorage.setItem('refreshToken', `${refreshToken}`);
 				})
@@ -43,12 +49,13 @@ const Kakao = (props) => {
 					// const defaultNick = sessionStorage.getItem('nick');
 					//const distriNick = defaultNick.indexOf('164', 0);
 					// const distriNick = defaultNick ? -1 : 1;
-					if (sessionStorage.getItem('usernick')) {
+					if (sessionStorage.getItem('nickname') === undefined) {
 						setFirst(false);
+						console.log(first, 'is first??== false');
 						navigate('/');
 					} else {
-						console.log('setFirst');
 						setFirst(true);
+						console.log(first, 'is first?? == true');
 					}
 				})
 				.catch((err) => {
@@ -57,6 +64,9 @@ const Kakao = (props) => {
 		};
 	};
 
+	//return <Spinner />;
 	return <>{first ? <FirstJoin /> : <Spinner />}</>;
+	//first(distrNick)가 있으면 정상적인 회원가입 창, false면 Spinner 보여주기
+	//return <>""</>;
 };
 export default Kakao;

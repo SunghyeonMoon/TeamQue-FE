@@ -4,8 +4,7 @@ import apis from '../../shared/apis/api';
 
 const initialState = {
 	user_info: {
-		username: '',
-		userid: '',
+		nickname: '',		
 	},
 	is_login: false,
 };
@@ -44,6 +43,7 @@ export const signIn = createAsyncThunk(
 	}
 );
 
+
 export const signOut = createAsyncThunk(
 	'user/logoutAxios',
 	async (_, thunkAPI) => {
@@ -60,27 +60,64 @@ export const signOut = createAsyncThunk(
 	}
 );
 
+export const nicknameSet = createAsyncThunk(
+	'user/nickname',
+	async (nickname: string, thunkAPI) => {
+		try{
+			console.log(nickname,"nickname");
+			await apis
+			.setNick(nickname)
+			.then(()=> {					
+					alert('닉네임 설정에 성공했습니다. 메인 페이지로 이동합니다.');
+				}
+			)
+		} catch (error:any){
+			if (error.response){
+				console.log(error.response,"error.response")
+				}else if(error.request){				
+				console.log(error.request,"error.request")				
+				}else if(error.message){				
+				console.log(error.message,"error.message")	
+				}
+			alert(error);
+			console.log(error,"nicknameSet error");
+			return thunkAPI.rejectWithValue(error.response.message);
+		}
+	}
+)
+
+export const test = createAsyncThunk(
+	'user/test',
+	async (_,thunkAPI) => {
+		try{
+			await apis.test().then(()=>{
+				console.log("test")
+			})
+		} catch(error:any){
+			console.log(error,"test error");
+		}
+	}
+);
+
 export const user = createSlice({
 	name: 'user',
 	initialState,
 	reducers: {
 		setUserToSession: (state, action) => {
-			sessionStorage.setItem('token', action.payload.token);
-			sessionStorage.setItem('username', action.payload.username);
-			sessionStorage.setItem('userId', action.payload.userId);
+			sessionStorage.setItem('accessToken', action.payload.accessToken);
+			sessionStorage.setItem('refreshToken', action.payload.refreshToken);
+			sessionStorage.setItem('nickname', action.payload.nickname);
 		},
 		getUser: (state, action) => {
-			const tempName = sessionStorage.getItem('username');
-			const tempId = sessionStorage.getItem('userId');
+			const tempName = sessionStorage.getItem('nickname');
 
-			state.user_info.username = tempName ? tempName : '';
-			state.user_info.userid = tempId ? tempId : '';
+			state.user_info.nickname = tempName ? tempName : '';		
 			state.is_login = true;
 		},
 		deleteUserFromSession: () => {
-			sessionStorage.removeItem('token');
-			sessionStorage.removeItem('username');
-			sessionStorage.removeItem('userId');
+			sessionStorage.removeItem('accessToken');
+			sessionStorage.removeItem('refreshToken');
+			sessionStorage.removeItem('nickname');
 		},
 	},
 	extraReducers: (builder) => {
@@ -89,8 +126,7 @@ export const user = createSlice({
 		});
 		builder.addCase(signIn.fulfilled, (state, action) => {
 			state.user_info = {
-        username: action.payload.userData.username,
-        userid: action.payload.userData.userId,
+        nickname: action.payload.userData.nickname,
       };
 			console.log(action,"action")
 			state.is_login = true;
@@ -105,6 +141,6 @@ export const user = createSlice({
 	},
 });
 
-export const { setUserToSession, getUser, deleteUserFromSession } =
-	user.actions;
+export const { setUserToSession, getUser, deleteUserFromSession } = user.actions;
+
 export default user.reducer;

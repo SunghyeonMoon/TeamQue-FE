@@ -3,7 +3,8 @@ const Main = () => {
   return( 
     <>
       <h2>Main</h2>
-      <div>{username?username:"login please"}</div>    
+      <div>{username?username:"login please please"}</div>    
+            
     </>
   );
 };

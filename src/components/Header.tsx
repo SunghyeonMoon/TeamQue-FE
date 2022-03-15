@@ -1,11 +1,15 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import SignIn from './SignIn';
 import SignUp from './SignUp';
+import {test} from '../redux/modules/user'
 
 interface Props {}
 
 const Header: React.FC<Props> = () => {
+
+	const dispatch = useDispatch();
   // 모달창 상태 관리
 	const [isSignInOpen, setisSignInOpen] = useState(false);
 	const [isSignUpOpen, setisSignUpOpen] = useState(false);
@@ -20,6 +24,10 @@ const Header: React.FC<Props> = () => {
 	};
 	const closeSignUp = () => {
 		setisSignUpOpen(false);
+	};
+	const onclick = () => {
+		console.log("test click!!")
+		dispatch(test());
 	};
 	return (
 		<>
@@ -37,6 +45,7 @@ const Header: React.FC<Props> = () => {
 				<button onClick={openSignIn}>Sign In</button>
 				<button onClick={openSignUp}>Sign Up</button>
 			</Container>
+			<button onClick={onclick}>test</button>
 		</>
 	);
 };
