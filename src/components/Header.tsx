@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import SignIn from './SignIn';
 import SignUp from './SignUp';
-import {test} from '../redux/modules/user'
+import {test,refreshtest} from '../redux/modules/user'
 
 interface Props {}
 
@@ -29,6 +29,10 @@ const Header: React.FC<Props> = () => {
 		console.log("test click!!")
 		dispatch(test());
 	};
+	const refreshTest = () => {
+		console.log("refreshTest test click!!")
+		dispatch(refreshtest());
+	};
 	return (
 		<>
 			<SignIn
@@ -46,6 +50,7 @@ const Header: React.FC<Props> = () => {
 				<button onClick={openSignUp}>Sign Up</button>
 			</Container>
 			<button onClick={onclick}>test</button>
+			<button onClick={refreshTest}>refresh test</button>
 		</>
 	);
 };

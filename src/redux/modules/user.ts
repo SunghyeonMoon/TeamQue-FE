@@ -11,9 +11,9 @@ const initialState = {
 
 export const signUp = createAsyncThunk(
 	'user/signup',
-	async (form: {}, thunkAPI) => {
+	async (userInfo: {}, thunkAPI) => {
 		try {
-			await apis.signUp(form).then((response) => {
+			await apis.signUp(userInfo).then((response) => {
 				alert('회원가입에 성공했습니다. 로그인 페이지로 이동합니다.');
 				return response.data;
 			});
@@ -32,12 +32,16 @@ export const signIn = createAsyncThunk(
 			const response = await apis.signIn(form).then((res) => {
 				if (res.status === 200) {
 					alert('로그인에 성공했습니다. 메인 페이지로 이동합니다.');
-				}
-				return res;
-			});
-			return response.data;
+				}				
+				console.log(res,"res.data");			
+				thunkAPI.dispatch(user.actions.setUserToSession(res))				
+				return res.data;
+			});			
+			console.log(response,"response.data")
+			return response;
 		} catch (err:any) {
-			alert(err);
+			alert(err + " signin err");
+			console.log(err , " signin err");
 			return thunkAPI.rejectWithValue(err.response.message);
 		}
 	}
@@ -99,14 +103,32 @@ export const test = createAsyncThunk(
 	}
 );
 
+export const refreshtest = createAsyncThunk(
+	'user/refreshtest',
+	async (_,thunkAPI) => {
+		try{
+			await apis
+				.refresh()
+				.then((res)=>{
+					console.log(res,"refreshtest");					
+					}
+				)
+		} catch(error:any){
+			console.log(error,"test error");
+		}
+	}
+);
+
 export const user = createSlice({
 	name: 'user',
 	initialState,
 	reducers: {
 		setUserToSession: (state, action) => {
-			sessionStorage.setItem('accessToken', action.payload.accessToken);
-			sessionStorage.setItem('refreshToken', action.payload.refreshToken);
-			sessionStorage.setItem('nickname', action.payload.nickname);
+			console.log(action.payload,"setUserToSession action.payload.data");
+			console.log(action.payload.data.nickname,"setUserToSession action.payload.data.nickname");
+			sessionStorage.setItem('nickname', action.payload.data.nickname);
+			sessionStorage.setItem('accessToken', action.payload.data.accessToken);
+			sessionStorage.setItem('refreshToken', action.payload.data.refreshToken);
 		},
 		getUser: (state, action) => {
 			const tempName = sessionStorage.getItem('nickname');
@@ -125,8 +147,9 @@ export const user = createSlice({
 			state = state;
 		});
 		builder.addCase(signIn.fulfilled, (state, action) => {
+			console.log(action.payload,"signIn.fulfilled action.payload.data");
 			state.user_info = {
-        nickname: action.payload.userData.nickname,
+        nickname: action.payload.data.nickname,
       };
 			console.log(action,"action")
 			state.is_login = true;

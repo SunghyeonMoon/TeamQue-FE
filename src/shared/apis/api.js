@@ -10,10 +10,12 @@ const instance = axios.create({
 instance.interceptors.request.use(
 	(config) => {
 		const accesssToken = sessionStorage.getItem('accessToken');
+		const refreshToken = sessionStorage.getItem('refreshToken');
 		//config.headers.Accept = "application/json";
 		config.headers['Content-Type'] = 'application/json;charset=utf-8';
 		config.headers['Authorization'] =
-			accesssToken != null ? 'Bearer ' + accesssToken : ' ';
+			//accesssToken != null ? 'Bearer ' + accesssToken : ' ';
+			refreshToken != null ? 'Bearer ' + refreshToken : ' ';
 		console.log(config, 'config');
 		return config;
 	},
@@ -60,13 +62,13 @@ export const apis = {
 	//---- 유저  ----//
 	kakao: (authorization_code) =>
 		instance.get(`/api/auth/kakao/callback?code=${authorization_code}`), //카카오로그인
-	signUp: (userInfo) => instance.post('/api/signup', userInfo), //회원가입
-	signIn: (userInfo) => instance.post('/api/signin', userInfo), //로그인
-	signOut: (userInfo) => instance.post('/api/signout', userInfo), //로그인
+	signUp: (userInfo) => instance.post('/auth/signup', userInfo), //회원가입
+	signIn: (userInfo) => instance.post('/auth/signin', userInfo), //로그인
+	signOut: (userInfo) => instance.post('/auth/signout', userInfo), //로그아웃
 	//---- 유저 정보 등록 ----//
 	setNick: (nickname) => instance.put('/auth/nickname', { nickname: nickname }), //초기 닉네임 등록
 	test: () => instance.get('/auth/test'),
 	//---- refresh  ----//
-	refresh: (refreshToken) => instance.post('/api/refresh', refreshToken),
+	refresh: (refreshToken) => instance.post('/auth/refresh', refreshToken),
 };
 export default apis;

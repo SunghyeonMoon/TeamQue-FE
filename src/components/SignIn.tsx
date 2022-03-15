@@ -1,7 +1,9 @@
 import { ChangeEvent, FormEvent, useState } from 'react';
 import styled from 'styled-components';
 import { KAKAO_API_URL} from "../shared/social/oAuth";
+import { useDispatch } from 'react-redux';
 import Modal from './Modal';
+import {signIn} from "../redux/modules/user"
 
 interface Props {
 	isOpen: boolean;
@@ -10,8 +12,10 @@ interface Props {
 }
 
 const SignIn: React.FC<Props> = ({ isOpen, close, openSignUp }) => {
+	const dispatch = useDispatch();
+
 	const [inputs, setInputs] = useState({
-		email: '',
+		userEmail: '',
 		password: '',
 	});
 
@@ -26,7 +30,9 @@ const SignIn: React.FC<Props> = ({ isOpen, close, openSignUp }) => {
 	const onSubmit = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		console.log('로그인 정보 확인', inputs);
+		dispatch(signIn(inputs));
 	};
+	
 	const onKakaoClick = () => {
 		console.log('카카오 로그인');    
     window.location.href = KAKAO_API_URL
@@ -43,8 +49,8 @@ const SignIn: React.FC<Props> = ({ isOpen, close, openSignUp }) => {
 					Email:
 					<input
 						type='email'
-						placeholder='Email'
-						name='email'
+						placeholder='userEmail'
+						name='userEmail'
 						onChange={onChange}
 					/>
 				</label>
