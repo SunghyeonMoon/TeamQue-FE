@@ -18,7 +18,7 @@ export const signUp = createAsyncThunk(
 				return response.data;
 			});
 		} catch (err:any) {
-			console.log(err.message, 'error');
+			thunkAPI.dispatch(user.actions.errorLog(err));
 			alert(err);
 			return thunkAPI.rejectWithValue(err.response.message);
 		}
@@ -41,7 +41,7 @@ export const signIn = createAsyncThunk(
 			return response;
 		} catch (err:any) {
 			alert(err + " signin err");
-			console.log(err , " signin err");
+			thunkAPI.dispatch(user.actions.errorLog(err));
 			return thunkAPI.rejectWithValue(err.response.message);
 		}
 	}
@@ -59,6 +59,7 @@ export const signOut = createAsyncThunk(
 			return true;
 		} catch (err:any) {
 			alert(err.response.data.msg + '로그아웃 실패');
+			thunkAPI.dispatch(user.actions.errorLog(err));
 			return false;
 		}
 	}
@@ -75,16 +76,9 @@ export const nicknameSet = createAsyncThunk(
 					alert('닉네임 설정에 성공했습니다. 메인 페이지로 이동합니다.');
 				}
 			)
-		} catch (error:any){
-			if (error.response){
-				console.log(error.response,"error.response")
-				}else if(error.request){				
-				console.log(error.request,"error.request")				
-				}else if(error.message){				
-				console.log(error.message,"error.message")	
-				}
+		} catch (error:any){			
 			alert(error);
-			console.log(error,"nicknameSet error");
+			thunkAPI.dispatch(user.actions.errorLog(error));
 			return thunkAPI.rejectWithValue(error.response.message);
 		}
 	}
@@ -98,7 +92,7 @@ export const test = createAsyncThunk(
 				console.log("test")
 			})
 		} catch(error:any){
-			console.log(error,"test error");
+			thunkAPI.dispatch(user.actions.errorLog(error));
 		}
 	}
 );
@@ -114,7 +108,7 @@ export const refreshtest = createAsyncThunk(
 					}
 				)
 		} catch(error:any){
-			console.log(error,"test error");
+			thunkAPI.dispatch(user.actions.errorLog(error));
 		}
 	}
 );
@@ -124,8 +118,7 @@ export const user = createSlice({
 	initialState,
 	reducers: {
 		setUserToSession: (state, action) => {
-			console.log(action.payload,"setUserToSession action.payload.data");
-			console.log(action.payload.data.nickname,"setUserToSession action.payload.data.nickname");
+			console.log(action.payload,"setUserToSession action.payload.data");		
 			sessionStorage.setItem('nickname', action.payload.data.nickname);
 			sessionStorage.setItem('accessToken', action.payload.data.accessToken);
 			sessionStorage.setItem('refreshToken', action.payload.data.refreshToken);
@@ -141,6 +134,15 @@ export const user = createSlice({
 			sessionStorage.removeItem('refreshToken');
 			sessionStorage.removeItem('nickname');
 		},
+		errorLog: (state, action) => {
+			if (action.payload.response){
+				console.log(action.payload.response,"error.response")
+				}else if(action.payload.request){				
+				console.log(action.payload.request,"error.request")				
+				}else if(action.payload.message){				
+				console.log(action.payload.message,"error.message")	
+				}
+		}
 	},
 	extraReducers: (builder) => {
 		builder.addCase(signUp.fulfilled, (state, action) => {

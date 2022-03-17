@@ -14,9 +14,9 @@ instance.interceptors.request.use(
 		//config.headers.Accept = "application/json";
 		config.headers['Content-Type'] = 'application/json;charset=utf-8';
 		config.headers['Authorization'] =
-			//accesssToken != null ? 'Bearer ' + accesssToken : ' ';
-			refreshToken != null ? 'Bearer ' + refreshToken : ' ';
-		console.log(config, 'config');
+			accesssToken != null ? 'Bearer ' + accesssToken : ' ';
+		//refreshToken != null ? 'Bearer ' + refreshToken : ' ';
+		console.log(config, 'instance.interceptors.request config');
 		return config;
 	},
 	(error) => {
