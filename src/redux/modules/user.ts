@@ -13,10 +13,13 @@ export const signUp = createAsyncThunk(
 	'user/signup',
 	async (userInfo: {}, thunkAPI) => {
 		try {
-			await apis.signUp(userInfo).then((response) => {
-				alert('회원가입에 성공했습니다. 로그인 페이지로 이동합니다.');
-				return response.data;
-			});
+			await apis
+				.signUp(userInfo)
+				.then((response:any) => {
+					alert('회원가입에 성공했습니다. 로그인 페이지로 이동합니다.');
+					return response.data;
+				}
+			);
 		} catch (err:any) {
 			thunkAPI.dispatch(user.actions.errorLog(err));
 			alert(err);
@@ -29,20 +32,21 @@ export const signIn = createAsyncThunk(
 	'user/signin',
 	async (form: any, thunkAPI) => {
 		try {
-			const response = await apis.signIn(form).then((res) => {
-				if (res.status === 200) {
-					alert('로그인에 성공했습니다. 메인 페이지로 이동합니다.');
-				}				
-				console.log(res,"res.data");			
-				thunkAPI.dispatch(user.actions.setUserToSession(res))				
-				return res.data;
-			});			
-			console.log(response,"response.data")
+			const response = 
+			await apis
+				.signIn(form)
+				.then((res:any) => {
+					if (res.status === 200) {
+						alert('로그인에 성공했습니다. 메인 페이지로 이동합니다.');
+					}					
+					thunkAPI.dispatch(user.actions.setUserToSession(res))				
+					return res.data;
+				});			
 			return response;
 		} catch (err:any) {
-			alert(err + " signin err");
-			thunkAPI.dispatch(user.actions.errorLog(err));
-			return thunkAPI.rejectWithValue(err.response.message);
+				alert(err + " signin err");
+				thunkAPI.dispatch(user.actions.errorLog(err));
+				return thunkAPI.rejectWithValue(err.response.message);
 		}
 	}
 );
@@ -52,8 +56,8 @@ export const signOut = createAsyncThunk(
 	'user/logoutAxios',
 	async (_, thunkAPI) => {
 		try {
-			user.actions.deleteUserFromSession();
-			await apis.signOut().then((res) => {
+			thunkAPI.dispatch(user.actions.deleteUserFromSession());
+			await apis.signOut().then((response:any) => {
 				alert('로그아웃에 성공하셨습니다');
 			});
 			return true;
@@ -68,14 +72,12 @@ export const signOut = createAsyncThunk(
 export const nicknameSet = createAsyncThunk(
 	'user/nickname',
 	async (nickname: string, thunkAPI) => {
-		try{
-			console.log(nickname,"nickname");
+		try{			
 			await apis
-			.setNick(nickname)
-			.then(()=> {					
+				.setNick(nickname)
+				.then(()=> {					
 					alert('닉네임 설정에 성공했습니다. 메인 페이지로 이동합니다.');
-				}
-			)
+				})
 		} catch (error:any){			
 			alert(error);
 			thunkAPI.dispatch(user.actions.errorLog(error));
@@ -84,6 +86,7 @@ export const nicknameSet = createAsyncThunk(
 	}
 )
 
+//accessToken test
 export const test = createAsyncThunk(
 	'user/test',
 	async (_,thunkAPI) => {
@@ -97,14 +100,15 @@ export const test = createAsyncThunk(
 	}
 );
 
+//refreshToken test
 export const refreshtest = createAsyncThunk(
 	'user/refreshtest',
 	async (_,thunkAPI) => {
 		try{
 			await apis
 				.refresh()
-				.then((res)=>{
-					console.log(res,"refreshtest");					
+				.then((response:any)=>{
+					console.log(response,"refreshtest");					
 					}
 				)
 		} catch(error:any){
@@ -125,14 +129,13 @@ export const user = createSlice({
 		},
 		getUser: (state, action) => {
 			const tempName = sessionStorage.getItem('nickname');
-
 			state.user_info.nickname = tempName ? tempName : '';		
 			state.is_login = true;
 		},
 		deleteUserFromSession: () => {
+			sessionStorage.removeItem('nickname');
 			sessionStorage.removeItem('accessToken');
 			sessionStorage.removeItem('refreshToken');
-			sessionStorage.removeItem('nickname');
 		},
 		errorLog: (state, action) => {
 			if (action.payload.response){
@@ -145,15 +148,16 @@ export const user = createSlice({
 		}
 	},
 	extraReducers: (builder) => {
-		builder.addCase(signUp.fulfilled, (state, action) => {
-			state = state;
+		builder.addCase(signUp.fulfilled, (state, action) => {if (action.payload) {
+			state.user_info = initialState.user_info;
+			state.is_login = false;
+		}
 		});
 		builder.addCase(signIn.fulfilled, (state, action) => {
 			console.log(action.payload,"signIn.fulfilled action.payload.data");
 			state.user_info = {
         nickname: action.payload.data.nickname,
       };
-			console.log(action,"action")
 			state.is_login = true;
 		});
 		builder.addCase(signOut.fulfilled, (state, action) => {

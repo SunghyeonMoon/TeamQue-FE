@@ -2,13 +2,9 @@ import React, { useState,ChangeEvent,FormEvent } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import apis from '../apis/api';
-
 import styled from 'styled-components';
 
 import {nicknameSet} from '../../redux/modules/user'
-
-//import nicknCheck from '';
 
 interface Props {
   close: () => void;
@@ -19,8 +15,7 @@ const FirstJoin: React.FC<Props> = ({close}) => {
 	const navigator = useNavigate();
 
   const [nickname, setNickname] = useState("");
-	//const [isNickDouble,setNickDouble] = useState(true);
-	const [isNick, setIsNick] = useState(false); //글자 수 체크
+	const [isNick, setIsNick] = useState(false);
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
  		setNickname(e.target.value);
@@ -35,15 +30,12 @@ const FirstJoin: React.FC<Props> = ({close}) => {
  	};
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
-  		e.preventDefault();
-  		console.log( nickname,'nickname check');			
-			//중복 체크 setNickDouble(dispatch(nickCheck(nickname))); :boolean
-			//글자 수 체크
+  		e.preventDefault();  		
       if(isNick === true){
-				dispatch(nicknameSet(nickname));// nickname 설정 후 db에 사용자 업데이트
+				dispatch(nicknameSet(nickname));
 				navigator("/");
 			}else{
-				window.alert("확실히 입력하고 다시 누르소잉");
+				window.alert("isNick == false");
 			}
   };
   
