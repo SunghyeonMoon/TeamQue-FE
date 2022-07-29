@@ -1,6 +1,6 @@
 
 # 서비스 바로가기
-[![큐!](https://user-images.githubusercontent.com/75469212/161385626-4f27e984-73a6-4dab-bd65-26e621277f2e.png)](everyque.com)
+[![큐!](https://user-images.githubusercontent.com/75469212/161385626-4f27e984-73a6-4dab-bd65-26e621277f2e.png)](https://everyque.com)
 
 <br>
 <br>
